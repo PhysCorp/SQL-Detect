@@ -1,51 +1,55 @@
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, accuracy_score
-import pandas as pd
-import pickle
+# [ Copyright 2024 MIT License ]
 
+# Imports
+try:
+    from sklearn.feature_extraction.text import TfidfVectorizer # vectorize the queries
+    from sklearn.ensemble import RandomForestClassifier # random forest classifier
+    from sklearn.model_selection import train_test_split # split the data
+    from sklearn.metrics import classification_report, accuracy_score # evaluate the model
+    import pickle # save model and vectorizer
+    import os # file operations
+except ImportError as e:
+    print(f"Error importing libraries, did you install the requirements? {e}")
+    exit()
 
-# sample data
-data = {
-    "query": [
-        "SELECT * FROM users WHERE id = 1",
-        "SELECT id FROM users WHERE username = 'admin' --",
-        "UPDATE users SET password = 'passwd' WHERE id = 1",
-        "' OR '1'='1",
-        "SELECT * FROM products WHERE category = 'books'",
-        "1; DROP TABLE users"
-    ],
-    "is_malicious": [0, 1, 0, 1, 0, 1]
-}
+# Get the maindirectory path (failsafe)
+maindirectory = os.path.dirname(os.path.abspath(__file__))
 
-df = pd.DataFrame(data)
+class RandomForestModel:
+    def __init__(self):
+        self.vectorizer = TfidfVectorizer()
+        self.model = RandomForestClassifier(n_estimators=100, random_state=42)
 
-# vectorize the queries
-tfidf_vectorizer = TfidfVectorizer()
-X = tfidf_vectorizer.fit_transform(df['query'])
+    def train(self, X, y):
+        # Split the data
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+        # Fit the vectorizer on the training data and transform training and test data
+        X_train = self.vectorizer.fit_transform(X_train)
+        X_test = self.vectorizer.transform(X_test)
+        # Train the model
+        self.model.fit(X_train, y_train)
+        # Make predictions on the test data
+        y_pred = self.model.predict(X_test)
+        # Print the classification report and accuracy
+        print(classification_report(y_test, y_pred))
 
-# target values
-y = df['is_malicious']
+    def save_model(self):
+        with open(os.path.join(maindirectory, 'data', 'vectorizer.pkl'), 'wb') as file:
+            pickle.dump(self.vectorizer, file)
+        with open(os.path.join(maindirectory, 'data', 'model.pkl'), 'wb') as file:
+            pickle.dump(self.model, file)
 
-# split the data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+    def load_model(self):
+        with open(os.path.join(maindirectory, 'data', 'vectorizer.pkl'), 'rb') as file:
+            self.vectorizer = pickle.load(file)
+        with open(os.path.join(maindirectory, 'data', 'model.pkl'), 'rb') as file:
+            self.model = pickle.load(file)
 
-# random forest classifier
-clf = RandomForestClassifier(n_estimators=100, random_state=42)
-clf.fit(X_train, y_train)
+    def predict(self, query):
+        query_vector = self.vectorizer.transform([query])
+        prediction = self.model.predict(query_vector)
+        return bool(prediction[0])
 
-# predict
-y_pred = clf.predict(X_test)
-
-# evaluate
-print(classification_report(y_test, y_pred))
-print("Accuracy:", accuracy_score(y_test, y_pred))
-
-
-# save the vectorizer and model
-with open('vectorizer.pkl', 'wb') as file:
-    pickle.dump(tfidf_vectorizer, file)
-
-with open('model.pkl', 'wb') as file:
-    pickle.dump(clf, file)
+if __name__ == "__main__":
+    print("This is the RandomForestModel class and is not designed to be run directly. Please import this file and use the class methods.")
+    exit()

@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: SQL-Detect
+    image: mwcurtis20/SQL-Detect:latest
+    restart: unless-stopped
+    volumes:
+      - model_data:/flaskapp/data
+    ports:
+      - "80:80"
+    environment:
+      - SECRET_TRAIN_PASSKEY=${SECRET_TRAIN_PASSKEY}
+      - ALLOW_TRAINING=${ALLOW_TRAINING}
+      - MODEL_URL=${MODEL_URL}
+      - VECTORIZER_URL=${VECTORIZER_URL}
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost/healthcheck"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+
+volumes:
+  model_data:
+    driver: local
