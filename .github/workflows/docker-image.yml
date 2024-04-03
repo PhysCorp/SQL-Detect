@@ -38,8 +38,8 @@ jobs:
           docker-compose -f docker-compose.yaml config > docker-stack.yml
           docker buildx create --use
           docker buildx build --push --platform linux/amd64 \
-            --tag mwcurtis20/SQL-Detect:latest \
-            --tag mwcurtis20/SQL-Detect:${{ github.sha }} \
+            --tag mwcurtis20/sql-detect:latest \
+            --tag mwcurtis20/sql-detect:${{ github.sha }} \
             --file Dockerfile .
 
       - name: Cleanup
