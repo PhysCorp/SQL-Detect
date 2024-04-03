@@ -4,8 +4,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: SQL-Detect
-    image: mwcurtis20/SQL-Detect:latest
+    container_name: sql-detect
+    image: mwcurtis20/sql-detect:latest
     restart: unless-stopped
     volumes:
       - model_data:/flaskapp/data
