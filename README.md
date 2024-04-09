@@ -14,7 +14,7 @@
 Tested on Fedora Silverblue
 
 ## Description
-This webserver is designed to detect SQL injection attempts in provided queries. It uses a trained Random Forest model to classify queries as malicious or not. The server is built with Quart, a Python ASGI web microframework, and Hypercorn, an ASGI server.
+This webserver is designed to detect SQL injection attempts in provided queries. It uses a trained Random Forest model to classify queries as malicious or not. The server is built with Quart, a Python ASGI web microframework, and Hypercorn, an ASGI server. Based on [`this dataset`](https://www.kaggle.com/datasets/sajid576/sql-injection-dataset/data)
 
 ## Endpoints
 ### POST /detect
