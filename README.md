@@ -40,7 +40,7 @@ This endpoint accepts a CSV file for retraining the model. The CSV file should b
 **Form Data:**
 - `file`: The CSV file
 - `password`: The password for authentication
-- 
+
 **Response:**
 ```json
 {
@@ -75,10 +75,13 @@ This endpoint returns the status of the server and the training process. It retu
 - [ ] python3-virtualenv
 
 ## Docker Method (Recommended)
+
+#### Please note, the Docker-compose file is required, and this project *cannot* be ran via `docker run` due to the need for volume mount and port mapping.
+
 ### Deploy from Docker Hub
 > [!Note]
 > Make sure you have [Docker](https://docs.docker.com/engine/install/) installed
-1. Save the [`docker-compose.yaml`](https://github.com/PhysCorp/SQL-Detect/docker-compose.yaml) file from this project to your local machine.
+1. Save the [`docker-compose.yaml`](https://raw.githubusercontent.com/PhysCorp/SQL-Detect/main/docker-compose.yaml) file from this project to your local machine.
 2. Create/edit `.env` file based on the contents in the `.env.example` file.:
 3. Create the container with `sudo docker-compose up`, or add `-d` to run in background.
 
